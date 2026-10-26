@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "tensura:human",
+    "tensura:human_saint",
+    "tensura:enlightened_human",
+    "tensura:divine_human"
+  ]
+}

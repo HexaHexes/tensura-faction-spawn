@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "tensura:beastfolk",
+    "tensura:beast_lord",
+    "tensura:spirit_beast",
+    "tensura:divine_beast",
+    "tensura:harpy",
+    "tensura:harpy_queen",
+    "tensura:spirit_bird",
+    "tensura:divine_bird"
+  ]
+}

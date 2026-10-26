@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "tensura:dwarf",
+    "tensura:dwarf_saint",
+    "tensura:enlightened_dwarf",
+    "tensura:divine_dwarf"
+  ]
+}

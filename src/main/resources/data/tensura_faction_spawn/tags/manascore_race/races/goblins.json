@@ -1,0 +1,27 @@
+{
+  "replace": false,
+  "values": [
+    "tensura:goblin",
+    "tensura:hobgoblin",
+    "tensura:enlightened_hobgoblin",
+    "tensura:hobgoblin_saint",
+    "tensura:ogre",
+    "tensura:enlightened_ogre",
+    "tensura:kijin",
+    "tensura:mystic_oni",
+    "tensura:spirit_oni",
+    "tensura:divine_oni",
+    "tensura:wicked_oni",
+    "tensura:death_oni",
+    "tensura:divine_fighter",
+    "tensura:orc",
+    "tensura:high_orc",
+    "tensura:orc_lord",
+    "tensura:orc_disaster",
+    "tensura:spirit_boar",
+    "tensura:divine_boar",
+    "tensura:giant",
+    "tensura:ancient_giant",
+    "tensura:divine_giant"
+  ]
+}

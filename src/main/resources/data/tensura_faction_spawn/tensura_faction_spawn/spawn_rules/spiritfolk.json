@@ -1,0 +1,9 @@
+{
+  "race": "#tensura_faction_spawn:spiritfolk",
+  "structures": "#tensura_faction_spawn:capital/spiritfolk",
+  "dimension": "tensura:hell",
+  "search_radius": 128,
+  "expand_on_missing": true,
+  "set_respawn": true,
+  "priority": 0
+}

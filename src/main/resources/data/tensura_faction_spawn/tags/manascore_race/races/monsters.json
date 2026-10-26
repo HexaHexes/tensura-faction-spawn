@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "tensura:slime",
+    "tensura:metal_slime",
+    "tensura:demon_slime",
+    "tensura:god_slime",
+    "tensura:wight",
+    "tensura:wight_king",
+    "tensura:spirit_skeleton",
+    "tensura:divine_skeleton",
+    "tensura:vampire",
+    "tensura:ghoul",
+    "tensura:vampire_lord",
+    "tensura:vampire_overcomer",
+    "tensura:divine_vampire"
+  ]
+}
