@@ -48,7 +48,8 @@ public final class FactionSpawnCommand {
             source.sendSuccess(() -> Component.literal(" - " + rule.id()
                     + " race=#" + rule.race().location()
                     + " structures=#" + rule.structures().location()
-                    + " dim=" + rule.dimension().location()), false);
+                    + " dim=" + rule.dimension().map(key -> key.location().toString()).orElse("deferred")
+                    + " respawn=" + rule.respawnMode().name().toLowerCase()), false);
         }
         return rules.size();
     }
@@ -65,9 +66,10 @@ public final class FactionSpawnCommand {
             source.sendFailure(Component.literal("No faction spawn rule matches your race."));
             return 0;
         }
-        ServerLevel level = source.getServer().getLevel(rule.get().dimension());
+        ServerLevel level = source.getServer().getLevel(
+                FactionSpawnService.resolveDimension(player, race.get(), rule.get()));
         if (level == null) {
-            source.sendFailure(Component.literal("Rule targets unknown dimension " + rule.get().dimension().location()));
+            source.sendFailure(Component.literal("Rule targets an unknown or missing dimension."));
             return 0;
         }
         Optional<BlockPos> target = FactionSpawnService.findNearest(level, rule.get(), level.getSharedSpawnPos());

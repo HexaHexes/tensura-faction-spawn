@@ -1,9 +1,7 @@
 {
   "race": "#tensura_faction_spawn:elves",
   "structures": "#tensura_faction_spawn:capital/elves",
-  "dimension": "minecraft:overworld",
   "search_radius": 128,
   "expand_on_missing": true,
-  "set_respawn": true,
   "priority": 0
 }
