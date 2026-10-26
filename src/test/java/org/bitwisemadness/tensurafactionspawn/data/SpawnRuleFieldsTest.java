@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -31,7 +32,7 @@ class SpawnRuleFieldsTest {
                   "dimension": "tensura:hell",
                   "search_radius": 512,
                   "expand_on_missing": false,
-                  "set_respawn": true,
+                  "set_respawn": "always",
                   "priority": 3
                 }
                 """));
@@ -41,7 +42,7 @@ class SpawnRuleFieldsTest {
         assertEquals("tensura:hell", fields.dimension());
         assertEquals(512, fields.searchRadius());
         assertFalse(fields.expandOnMissing());
-        assertTrue(fields.setRespawn());
+        assertEquals(RespawnMode.ALWAYS, fields.respawnMode());
         assertEquals(3, fields.priority());
     }
 
@@ -51,11 +52,30 @@ class SpawnRuleFieldsTest {
                 { "race": "humans", "structures": "capital/humans" }
                 """));
 
-        assertEquals(SpawnRuleFields.DEFAULT_DIMENSION, fields.dimension());
+        assertNull(fields.dimension(), "an absent dimension must defer to the race's own respawn dimension");
         assertEquals(SpawnRuleFields.DEFAULT_SEARCH_RADIUS, fields.searchRadius());
         assertTrue(fields.expandOnMissing());
-        assertFalse(fields.setRespawn());
+        assertEquals(RespawnMode.IF_UNSET, fields.respawnMode());
         assertEquals(0, fields.priority());
+    }
+
+    @Test
+    void mapsLegacyBooleansForSetRespawn() {
+        SpawnRuleFields truthy = SpawnRuleFields.fromJson(json(
+                "{ \"race\": \"a:b\", \"structures\": \"c:d\", \"set_respawn\": true }"));
+        SpawnRuleFields falsy = SpawnRuleFields.fromJson(json(
+                "{ \"race\": \"a:b\", \"structures\": \"c:d\", \"set_respawn\": false }"));
+
+        assertEquals(RespawnMode.ALWAYS, truthy.respawnMode());
+        assertEquals(RespawnMode.NEVER, falsy.respawnMode());
+    }
+
+    @Test
+    void rejectsAnUnknownSetRespawnValue() {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> SpawnRuleFields.fromJson(json(
+                        "{ \"race\": \"a:b\", \"structures\": \"c:d\", \"set_respawn\": \"sometimes\" }")));
+        assertTrue(ex.getMessage().contains("set_respawn"));
     }
 
     @Test
@@ -84,14 +104,15 @@ class SpawnRuleFieldsTest {
     @Test
     void rejectsANonPositiveSearchRadius() {
         assertThrows(IllegalArgumentException.class,
-                () -> SpawnRuleFields.fromJson(json("{ \"race\": \"a:b\", \"structures\": \"c:d\", \"search_radius\": 0 }")));
+                () -> SpawnRuleFields.fromJson(json(
+                        "{ \"race\": \"a:b\", \"structures\": \"c:d\", \"search_radius\": 0 }")));
     }
 
     @Test
     void resolutionOrderPrefersHigherPriorityThenNameAscending() {
-        SpawnRuleFields low = new SpawnRuleFields("zzz:race", "s", "minecraft:overworld", 1, true, false, 0);
-        SpawnRuleFields highB = new SpawnRuleFields("bbb:race", "s", "minecraft:overworld", 1, true, false, 5);
-        SpawnRuleFields highA = new SpawnRuleFields("aaa:race", "s", "minecraft:overworld", 1, true, false, 5);
+        SpawnRuleFields low = new SpawnRuleFields("zzz:race", "s", null, 1, true, RespawnMode.IF_UNSET, 0);
+        SpawnRuleFields highB = new SpawnRuleFields("bbb:race", "s", null, 1, true, RespawnMode.IF_UNSET, 5);
+        SpawnRuleFields highA = new SpawnRuleFields("aaa:race", "s", null, 1, true, RespawnMode.IF_UNSET, 5);
 
         List<SpawnRuleFields> rules = new ArrayList<>(List.of(low, highB, highA));
         rules.sort(SpawnRuleFields.RESOLUTION_ORDER);

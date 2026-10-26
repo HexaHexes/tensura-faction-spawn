@@ -16,7 +16,9 @@ import java.util.Optional;
  *
  * <p>A rule maps one <em>race-group tag</em> to one <em>structure tag</em>:
  * {@code race} names which races the rule applies to, and {@code structures}
- * names the capitals valid for them. Both are datapack tags.</p>
+ * names the capitals valid for them. {@code dimension} is optional - when
+ * absent (null here), the rule defers to the race's own respawn dimension,
+ * which matters because dimension is per-race in Tensura, not per-faction.</p>
  */
 public record SpawnRuleFields(
         String race,
@@ -24,10 +26,8 @@ public record SpawnRuleFields(
         String dimension,
         int searchRadius,
         boolean expandOnMissing,
-        boolean setRespawn,
+        RespawnMode respawnMode,
         int priority) {
-
-    public static final String DEFAULT_DIMENSION = "minecraft:overworld";
 
     /**
      * Default search radius in chunks (~2048 blocks). {@code findNearestMapStructure}
@@ -48,15 +48,18 @@ public record SpawnRuleFields(
     public static SpawnRuleFields fromJson(JsonObject json) {
         String race = requiredTag(json, "race");
         String structures = requiredTag(json, "structures");
-        String dimension = optionalString(json, "dimension").orElse(DEFAULT_DIMENSION);
+        // Absent dimension = defer to the race's own respawn dimension (see SpawnRule).
+        String dimension = optionalString(json, "dimension").orElse(null);
         int searchRadius = optionalInt(json, "search_radius").orElse(DEFAULT_SEARCH_RADIUS);
         if (searchRadius < 1) {
             throw new IllegalArgumentException("search_radius must be >= 1, got " + searchRadius);
         }
         boolean expandOnMissing = optionalBoolean(json, "expand_on_missing").orElse(true);
-        boolean setRespawn = optionalBoolean(json, "set_respawn").orElse(false);
+        RespawnMode respawnMode = optionalElement(json, "set_respawn")
+                .map(RespawnMode::fromJson)
+                .orElse(RespawnMode.IF_UNSET);
         int priority = optionalInt(json, "priority").orElse(0);
-        return new SpawnRuleFields(race, structures, dimension, searchRadius, expandOnMissing, setRespawn, priority);
+        return new SpawnRuleFields(race, structures, dimension, searchRadius, expandOnMissing, respawnMode, priority);
     }
 
     /** The tag's resource-location string with any leading {@code #} removed. */
@@ -73,27 +76,20 @@ public record SpawnRuleFields(
         return stripHash(value);
     }
 
-    private static Optional<String> optionalString(JsonObject json, String key) {
+    private static Optional<JsonElement> optionalElement(JsonObject json, String key) {
         JsonElement element = json.get(key);
-        if (element == null || element.isJsonNull()) {
-            return Optional.empty();
-        }
-        return Optional.of(element.getAsString());
+        return element == null || element.isJsonNull() ? Optional.empty() : Optional.of(element);
+    }
+
+    private static Optional<String> optionalString(JsonObject json, String key) {
+        return optionalElement(json, key).map(JsonElement::getAsString);
     }
 
     private static Optional<Integer> optionalInt(JsonObject json, String key) {
-        JsonElement element = json.get(key);
-        if (element == null || element.isJsonNull()) {
-            return Optional.empty();
-        }
-        return Optional.of(element.getAsInt());
+        return optionalElement(json, key).map(JsonElement::getAsInt);
     }
 
     private static Optional<Boolean> optionalBoolean(JsonObject json, String key) {
-        JsonElement element = json.get(key);
-        if (element == null || element.isJsonNull()) {
-            return Optional.empty();
-        }
-        return Optional.of(element.getAsBoolean());
+        return optionalElement(json, key).map(JsonElement::getAsBoolean);
     }
 }

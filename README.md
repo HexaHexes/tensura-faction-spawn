@@ -52,21 +52,24 @@ spawn mod picks it up automatically.
 {
   "race": "#tensura_faction_spawn:spiritfolk",
   "structures": "#tensura_faction_spawn:capital/spiritfolk",
-  "dimension": "tensura:hell",
   "search_radius": 128,
   "expand_on_missing": true,
-  "set_respawn": true,
   "priority": 0
 }
 ```
 
 - `race` - the race-group tag this rule applies to.
 - `structures` - the capital structure tag to search.
-- `dimension` - the dimension the capitals live in (default `minecraft:overworld`).
+- `dimension` - optional. The dimension the capitals live in; when omitted, the
+  rule defers to the race's own respawn dimension (Tensura resolves demons to
+  its hell and every other race to the overworld).
 - `search_radius` - search radius in chunks (default 128). Larger values cost
   more, because the search works outward ring by ring.
 - `expand_on_missing` - widen the search once before giving up (default true).
-- `set_respawn` - also make the capital the player's respawn point (default false).
+- `set_respawn` - when the capital becomes the player's respawn point: `never`,
+  `if_unset` (default - a first pick gets a home, a reincarnation keeps the bed
+  they already set) or `always`. Legacy `true`/`false` are accepted and mean
+  `always`/`never`.
 - `priority` - when several rules match, the highest priority wins (then the race
   tag name, for a deterministic tie-break).
 
