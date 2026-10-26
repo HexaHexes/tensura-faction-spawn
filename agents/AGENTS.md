@@ -1,67 +1,47 @@
-# Agent rules and conventions — Tensura Faction Spawn
+# Agent rules and conventions
 
-**Repo:** `HexaHexes/tensura-faction-spawn` · **Mod ID:** `tensura_faction_spawn` · **Branch:** `main`
-**Platform:** Minecraft 1.21.1 / NeoForge 21.1.259 / JDK 21 · **Jar:** `build/libs/tensura_faction_spawn-<version>.jar`
+Org-wide rules for every HexaHexes mod repo. This file is maintained in the
+[`neoforge-mod-template`](https://github.com/HexaHexes/neoforge-mod-template)
+repo and pulled into each repo **verbatim** - never hand-edit it here. Rule
+changes are made in the template first (own branch + squash PR), then the file
+is pulled into this repo as its own PR.
 
-Places a player at their faction's capital when they first pick a race or
-reincarnate. Datapack-driven: race-group tags match the player's race, spawn
-rules map a race-group tag to a capital structure tag, and the capital nearest to
-the world spawn is chosen. Capital cities are separate worldgen datapacks that
-only append their structures to the central `#tensura_faction_spawn:capital/*`
-tags.
-
-**Dependencies**
-- Required: Minecraft, NeoForge, `tensura`, `manascore`. The race API
-  (`RaceAPI`, `RaceEvents`, `ManasRaceInstance`) lives in ManasCore's `race`
-  module, extracted from the core artifact's nested `META-INF/jars`.
-
-**Test:** `./gradlew runGameTestServer` — `FactionSpawnGameTests` (2 tests).
-`expectedTests = 2` in `build.gradle` must match the `@GameTest` count. JUnit:
-`SpawnRuleFieldsTest`, `NearestSelectionTest`.
-
-**Gotchas**
-- **Evolution vs. reincarnation is decided by the `Changeable<Boolean>` relocate
-  flag on ManasCore's `SET_RACE`, never by the evolution lineage.** Tensura passes
-  `true` for a first pick / reincarnation (`ReincarnationMenu`) and `false` for
-  every evolution, including Cross Evolution cross-evolutions (which route through
-  `Races.evolveRace(...)`). A lineage test would be fragile here; mirror the flag.
-- **The relocation is deferred one server tick.** Tensura does its own default
-  relocation synchronously right after `SET_RACE`; running ours in the same call
-  would be overwritten. The queued player is flushed on the next `ServerTickEvent.Post`
-  and the destination is read from live race data then.
-- **`findNearestMapStructure` cost is quadratic in `search_radius`** (it searches
-  ring by ring). Keep radii modest; the shipped default is 128 chunks and the
-  expand step is bounded at 512, not truly whole-dimension.
-- Race-group and capital tags are additive (`"replace": false`) so capital
-  datapacks and addons extend them without editing this mod.
-- **Rule `dimension` is optional and defers to the race.** Tensura's
-  `getRespawnDimension` is per-race - only `LesserDaemonRace` overrides it (to
-  `tensura:hell`) and the whole daemon chain inherits that override, so a
-  hardcoded faction dimension would misplace addon races that join the
-  spiritfolk tag later. `set_respawn` is a tri-state
-  (`never`/`if_unset`/`always`, default `if_unset`); in a bedless dimension
-  (`tensura:hell` has `bed_works: false`) `if_unset` skips rather than store a
-  point vanilla respawn would ignore.
+Repo-specific rules - identity, description, dependencies, test commands,
+gotchas and sanctioned exceptions - live in [`agents/REPO.md`](REPO.md), the
+only agent-rules file edited inside a repo.
 
 ---
 
-## Branch sync (do this first)
+## Before you start (do this first)
 
 Before starting any new development in this repo:
 
-1. `git status` — confirm what uncommitted work exists. Never disturb or sweep it.
-2. `git pull --ff-only` — sync with the remote. A fast-forward is the normal case,
-   because we push straight to the shared branch.
-3. If the pull would **not** fast-forward (the branch has diverged), or if it would
+1. **Open issues for the work.** Every piece of work begins as an issue - or
+   several, for complex tasks - detailing what needs to be done; the PR
+   references them. No tracking issue, no work.
+2. **Check rule freshness.** Compare this repo's `agents/AGENTS.md` against the
+   template's and reconcile any drift before touching code - rules changed in
+   the template must have been pulled here first.
+3. `git status` — confirm what uncommitted work exists. Never disturb or sweep it.
+4. `git pull --ff-only` — sync with the remote. A fast-forward is the normal case,
+   because history on the default branch is never rewritten.
+5. If the pull would **not** fast-forward (the branch has diverged), or if it would
    collide with local uncommitted work, **stop and ask** rather than merging, rebasing
    or stashing on your own.
+
+**Remote:** `github.com/HexaHexes/<name>` (default branch `main`). Direct pushes to
+the default branch are blocked by branch rulesets - land changes through a PR. Push
+anything only after checks are green and the user has given the go.
+
+**Pulling rule updates:** when the template's `agents/AGENTS.md` changes, pull the
+file into this repo verbatim as its own PR - never re-type or patch it by hand.
 
 ## Scope doctrine
 
 - **One mod + bundled datapack.** No KubeJS scripts.
 - **Data-driven over code** — prefer JSON/datapack content to Java when both work.
 - **Public API only, no mixins** in the colony-gear-style addon mods. Sanctioned
-  exception: `ds-tensura-fix` (tensura-dragon-skin-fix), a mixin fix mod by design.
+  exception: `ds-tensura-fix` (tensura-dragon-skin-rebalance), a mixin fix mod by design.
 
 ## Verification
 
@@ -86,6 +66,22 @@ Before starting any new development in this repo:
   `libs/` and `testmods/` staging folders are retired: CI must resolve every
   dependency from a clean checkout. Pin the exact version the repo was verified
   against; bump pins deliberately, never implicitly.
+- **Org-owned libraries publish to GitHub Packages** (`https://maven.pkg.github.com/HexaHexes/<repo>`,
+  e.g. `infinite-dungeon-api`) and follow the same rule - never fall back to a
+  gitignored local jar. Watch three things here:
+  - **Reads always require auth, and GitHub answers 404 (not 401) when it is missing**,
+    so an unauthenticated consumer fails with a message that looks like a mistyped
+    artifact coordinate rather than a credential problem.
+  - **The workflow `GITHUB_TOKEN` can publish a package owned by its own repo but
+    cannot read a package owned by a different repository.** Consumers use the org
+    secret `PACKAGE_READ_TOKEN` (classic token, `read:packages`). Declare the
+    repository in `build.gradle` with credentials reading `System.getenv('GITHUB_ACTOR')`
+    / `System.getenv('GITHUB_TOKEN')`, falling back to the `gpr.user` / `gpr.key`
+    Gradle properties for local builds.
+  - Inject the secret **scoped to the Gradle step only**
+    (`env: GITHUB_TOKEN: ${{ secrets.PACKAGE_READ_TOKEN }}`), never at job level -
+    job-level injection silently changes what `actions/checkout` and any `gh` CLI
+    step authenticates as.
 - On `run/` file-lock errors, kill any stale `java` process and retry.
 
 ## PowerShell quirks (this org is developed on Windows)
@@ -98,41 +94,62 @@ Before starting any new development in this repo:
   UTF-8 BOM that breaks Gradle's parser and YAML. Use
   `[System.IO.File]::WriteAllText($path, $text)` (no BOM). Re-check for BOMs after
   any script-written edit.
+- **A fresh `git init` on Windows records new files as `100644`** — the executable bit
+  is invisible to git there, so a committed `gradlew` reaches CI as non-executable and
+  every job dies with `./gradlew: Permission denied` before Gradle starts. Before a
+  repo's first commit, run `git update-index --chmod=+x gradlew` and confirm with
+  `git ls-files -s gradlew` (expect `100755`).
+- There are no repo-owned `.ps1` scripts any more. One-off inspection commands are
+  fine; anything that *generates shipped content* belongs in the build, not in a
+  script.
 
 ## Git & release
 
 - Remote is SSH: `git@github.com:HexaHexes/<name>.git`.
-- Push only after tests are green **and** the user has given the go.
+- Push only after checks are green **and** the user has given the go.
 - Never sweep the user's uncommitted work into a commit — commit only what is intended.
 - Commit subjects: concise, imperative.
-- **Version bump on finish:** always bump the version when a new feature or bugfix
-  is finished.
+- **Version bump on finish:** always bump `mod_version` in `gradle.properties`
+  when a new feature or bugfix is finished.
 - **One feature or bugfix per branch:** develop each on its own feature branch and
-  merge it into main/master through a pull request with a **squash merge**. The PR
-  body must detail the work done, following `.github/pull_request_template.md`.
+  merge it into the default branch through a pull request with a **squash merge**.
+  The PR body must detail the work done, following `.github/pull_request_template.md`.
 
 ## House style
 
-- **No icons** unless the user explicitly asks.
+- **No icons** unless the user explicitly asks. Icons are being removed across all repos.
+- **No emojis, ever.** Prohibited in all code, docs, configs, and commit messages.
 - READMEs are **player-facing only**: pitch, mechanics in plain terms, in-game usage,
   required/optional dependencies, credits, license. No build internals, no class names.
-- This repo is **LGPL v2.1**, copyright Bitwise Madness. `NOTICE` / attribution files
+- **AI disclosure in every README.** Every `README.md` ends with the org's
+  AI-assistance disclosure as its final section, in the canonical wording -
+  identical in every repo, no variants:
+
+  ```markdown
+  ## AI disclosure
+
+  Parts of this project were written with the assistance of AI coding tools.
+  AI-assisted code, data and documentation ship only after human review by the
+  maintainers.
+  ```
+- All repos are **LGPL v2.1**, copyright Bitwise Madness. `NOTICE` / attribution files
   are mandatory and must never be deleted.
 - Deploy to the Tensura RPG instance **only** when the user asks.
 
 ## Naming
 
-- **Repo and folder:** lowercase, hyphenated (e.g. `tensura-faction-spawn`).
-- **`mod_id`:** lowercase with underscores (e.g. `tensura_faction_spawn`). Minecraft
+- **Repo and folder:** lowercase, hyphenated (e.g. `tensura-colony-gear`).
+- **`mod_id`:** lowercase with underscores (e.g. `tensura_colony_gear`). Minecraft
   requires `[a-z][a-z0-9_]{1,63}`.
 - **Jar / `archivesName`:** follows `mod_id` by default.
 - **Java base package:** `org.bitwisemadness.<project-name>` - repo name lowercased,
-  separators stripped.
+  separators stripped (e.g. `ds-tensura-fix` -> `org.bitwisemadness.dstensurafix`).
+  The Maven `group` in `build.gradle` matches (`org.bitwisemadness`).
 - Keep repo name, folder name, `mod_id`, and the Java package aligned; the rename
   checklist in `README.md` walks the whole set.
-- **This template is canonical for org-wide rules.** When a rule is added or changed
-  in any repo's `agents/AGENTS.md`, mirror the same change into the template so new
-  repos inherit it.
+- **This template is canonical for org-wide rules.** Rules change here first;
+  consuming repos never hand-edit their `agents/AGENTS.md` - they pull the file
+  verbatim (see Before you start).
 
 ## CI & release model
 
