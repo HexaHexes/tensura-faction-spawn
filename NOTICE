@@ -1,0 +1,15 @@
+Tensura Faction Spawn
+Copyright (c) 2026 Bitwise Madness
+
+This mod is licensed under the GNU Lesser General Public License v2.1 - see
+the accompanying LICENSE file.
+
+This mod is an addon for Tensura: Reincarnated and reads its race system
+through ManasCore's public race API (races, race tags, and the race-set
+signal). No Tensura or ManasCore code is included or modified.
+
+- Minecraft is a trademark of Mojang AB. This mod is not affiliated with or
+  endorsed by Mojang.
+- NeoForge: https://neoforged.net/
+- Tensura: Reincarnated and ManasCore remain the works of their respective
+  authors.
