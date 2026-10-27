@@ -21,8 +21,8 @@ tags.
   (`RaceAPI`, `RaceEvents`, `ManasRaceInstance`) lives in ManasCore's `race`
   module, extracted from the core artifact's nested `META-INF/jars`.
 
-**Test:** `./gradlew runGameTestServer` — `FactionSpawnGameTests` (2 tests).
-`expectedTests = 2` in `build.gradle` must match the `@GameTest` count. JUnit:
+**Test:** `./gradlew runGameTestServer` — `FactionSpawnGameTests` (3 tests).
+`expectedTests = 3` in `build.gradle` must match the `@GameTest` count. JUnit:
 `SpawnRuleFieldsTest`, `NearestSelectionTest`.
 
 **Gotchas**

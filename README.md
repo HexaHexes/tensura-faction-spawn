@@ -44,6 +44,11 @@ additive, so an addon's races can be added with `"replace": false`.
 count as a faction's capital. A capital datapack adds its structure here and the
 spawn mod picks it up automatically.
 
+The mod bundles interim capital assignments so factions work out of the box:
+dwarves resolve to Tensura's dwarf villages, goblins (and orcs) to goblin and orc
+villages, and lizardmen to lizardmen towers. Humans and elves have no bundled
+capital yet and stay where they are until dedicated capital datapacks land.
+
 ### Spawn rules
 
 `data/<namespace>/tensura_faction_spawn/spawn_rules/<id>.json`:
