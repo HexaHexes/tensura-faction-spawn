@@ -50,3 +50,12 @@ tags.
   datapacks and addons extend them without editing this mod.
 - Ecosystem roadmap lives on the tracker: #11 is the governing-spec decision
   record, #12 the generation-engine spike, #13 the future repository split.
+
+## CI & release model - this repo
+
+- `ci.yml` runs the template's three checks (junit, gametest, version-bump).
+- `release.yml` cuts the GitHub release for `v<mod_version>` on a push to `main`
+  (pre-releases only when the repo variable `ALPHA_RELEASES` is true), and
+  `publish.yml` publishes the Maven artifact to the org's GitHub Packages
+  registry when that release is published - see the org rulebook for the
+  consumer-side auth details (`PACKAGE_READ_TOKEN`).
