@@ -1,11 +1,10 @@
 package org.bitwisemadness.tensurafactionspawn.data;
 
+import java.util.List;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.structure.Structure;
-
-import java.util.List;
 
 /**
  * The mod's built-in capital structure tags - one per faction.

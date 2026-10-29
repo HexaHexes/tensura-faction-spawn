@@ -3,14 +3,13 @@ package org.bitwisemadness.tensurafactionspawn.data;
 import com.google.gson.JsonObject;
 import io.github.manasmods.manascore.race.api.ManasRace;
 import io.github.manasmods.manascore.race.api.RaceAPI;
+import java.util.Optional;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
-
-import java.util.Optional;
 
 /**
  * A validated spawn rule: the Minecraft-resolved view of a
