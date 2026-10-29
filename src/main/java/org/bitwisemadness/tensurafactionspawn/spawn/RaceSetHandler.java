@@ -2,16 +2,15 @@ package org.bitwisemadness.tensurafactionspawn.spawn;
 
 import dev.architectury.event.EventResult;
 import io.github.manasmods.manascore.race.api.RaceEvents;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import org.bitwisemadness.tensurafactionspawn.TensuraFactionSpawn;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import org.bitwisemadness.tensurafactionspawn.TensuraFactionSpawn;
 
 /**
  * Listens for ManasCore's {@code SET_RACE} and schedules a faction-capital
