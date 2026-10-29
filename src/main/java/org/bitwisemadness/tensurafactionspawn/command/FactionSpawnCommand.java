@@ -2,6 +2,7 @@ package org.bitwisemadness.tensurafactionspawn.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.manasmods.manascore.race.api.ManasRaceInstance;
+import java.util.Optional;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -11,8 +12,6 @@ import net.minecraft.server.level.ServerPlayer;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRule;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
 import org.bitwisemadness.tensurafactionspawn.spawn.FactionSpawnService;
-
-import java.util.Optional;
 
 /**
  * Operator command for inspecting and forcing faction-capital placement.

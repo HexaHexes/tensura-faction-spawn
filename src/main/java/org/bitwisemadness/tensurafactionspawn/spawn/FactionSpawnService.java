@@ -3,6 +3,7 @@ package org.bitwisemadness.tensurafactionspawn.spawn;
 import io.github.manasmods.manascore.race.api.ManasRaceInstance;
 import io.github.manasmods.manascore.race.api.RaceAPI;
 import io.github.manasmods.manascore.race.api.Races;
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -16,8 +17,6 @@ import org.bitwisemadness.tensurafactionspawn.TensuraFactionSpawn;
 import org.bitwisemadness.tensurafactionspawn.data.RespawnMode;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRule;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
-
-import java.util.Optional;
 
 /**
  * Chooses and applies a player's faction capital.

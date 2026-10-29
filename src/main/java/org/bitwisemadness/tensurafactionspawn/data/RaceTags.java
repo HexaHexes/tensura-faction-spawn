@@ -2,10 +2,9 @@ package org.bitwisemadness.tensurafactionspawn.data;
 
 import io.github.manasmods.manascore.race.api.ManasRace;
 import io.github.manasmods.manascore.race.api.RaceAPI;
+import java.util.List;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-
-import java.util.List;
 
 /**
  * The mod's built-in race-group tags - one per faction.

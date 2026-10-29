@@ -1,5 +1,7 @@
 package org.bitwisemadness.tensurafactionspawn.gametest;
 
+import java.util.List;
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
@@ -11,9 +13,6 @@ import org.bitwisemadness.tensurafactionspawn.TensuraFactionSpawn;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRule;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
 import org.bitwisemadness.tensurafactionspawn.spawn.FactionSpawnService;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Server-side coverage for the datapack wiring.

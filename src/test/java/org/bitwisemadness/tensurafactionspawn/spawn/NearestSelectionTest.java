@@ -1,8 +1,8 @@
 package org.bitwisemadness.tensurafactionspawn.spawn;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Capital selection math: nearest-to-world-spawn picking. Pure JVM.
