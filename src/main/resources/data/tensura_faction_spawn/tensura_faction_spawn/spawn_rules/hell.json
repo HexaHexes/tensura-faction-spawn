@@ -1,0 +1,7 @@
+{
+  "race": "#tensura_faction_spawn:hell",
+  "structures": "#tensura_faction_spawn:capital/hell",
+  "search_radius": 128,
+  "expand_on_missing": true,
+  "priority": 0
+}

@@ -1,0 +1,7 @@
+{
+  "race": "#tensura_faction_spawn:giants",
+  "structures": "#tensura_faction_spawn:capital/giants",
+  "search_radius": 128,
+  "expand_on_missing": true,
+  "priority": 0
+}

@@ -22,17 +22,19 @@ public final class StructureTags {
     public static final TagKey<Structure> CAPITAL_HUMANS = create("humans");
     public static final TagKey<Structure> CAPITAL_ELVES = create("elves");
     public static final TagKey<Structure> CAPITAL_DWARVES = create("dwarves");
-    public static final TagKey<Structure> CAPITAL_SPIRITFOLK = create("spiritfolk");
+    public static final TagKey<Structure> CAPITAL_CELESTIALS = create("celestials");
+    public static final TagKey<Structure> CAPITAL_HELL = create("hell");
     public static final TagKey<Structure> CAPITAL_BEASTFOLK = create("beastfolk");
     public static final TagKey<Structure> CAPITAL_AQUATIC = create("aquatic");
     public static final TagKey<Structure> CAPITAL_INSECT = create("insect");
     public static final TagKey<Structure> CAPITAL_MONSTERS = create("monsters");
     public static final TagKey<Structure> CAPITAL_GOBLINS = create("goblins");
     public static final TagKey<Structure> CAPITAL_LIZARDMAN = create("lizardman");
+    public static final TagKey<Structure> CAPITAL_GIANTS = create("giants");
 
     public static final List<TagKey<Structure>> ALL = List.of(
-            CAPITAL_HUMANS, CAPITAL_ELVES, CAPITAL_DWARVES, CAPITAL_SPIRITFOLK, CAPITAL_BEASTFOLK,
-            CAPITAL_AQUATIC, CAPITAL_INSECT, CAPITAL_MONSTERS, CAPITAL_GOBLINS, CAPITAL_LIZARDMAN);
+            CAPITAL_HUMANS, CAPITAL_ELVES, CAPITAL_DWARVES, CAPITAL_CELESTIALS, CAPITAL_HELL, CAPITAL_BEASTFOLK,
+            CAPITAL_AQUATIC, CAPITAL_INSECT, CAPITAL_MONSTERS, CAPITAL_GOBLINS, CAPITAL_LIZARDMAN, CAPITAL_GIANTS);
 
     private StructureTags() {
     }

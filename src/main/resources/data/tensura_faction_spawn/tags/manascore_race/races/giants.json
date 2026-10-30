@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "tensura:giant",
+    "tensura:ancient_giant",
+    "tensura:divine_giant"
+  ]
+}

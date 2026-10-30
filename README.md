@@ -34,8 +34,9 @@ mod.
 ### Race-group tags
 
 `data/<namespace>/tags/manascore_race/races/<group>.json`: which races belong to
-a faction. Shipped groups: `humans`, `elves`, `dwarves`, `spiritfolk`,
-`beastfolk`, `aquatic`, `insect`, `monsters`, `goblins`, `lizardman`. They are
+a faction. Shipped groups: `humans`, `elves`, `dwarves`, `celestials`,
+`hell`, `beastfolk`, `aquatic`, `insect`, `monsters`, `goblins`, `lizardman`,
+`giants`. They are
 additive, so an addon's races can be added with `"replace": false`.
 
 ### Capital structure tags
@@ -55,8 +56,8 @@ capital yet and stay where they are until dedicated capital datapacks land.
 
 ```json
 {
-  "race": "#tensura_faction_spawn:spiritfolk",
-  "structures": "#tensura_faction_spawn:capital/spiritfolk",
+  "race": "#tensura_faction_spawn:humans",
+  "structures": "#tensura_faction_spawn:capital/humans",
   "search_radius": 128,
   "expand_on_missing": true,
   "priority": 0
