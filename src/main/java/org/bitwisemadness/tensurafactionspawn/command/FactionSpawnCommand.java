@@ -9,6 +9,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import org.bitwisemadness.tensurafactionspawn.capital.CapitalEntry;
+import org.bitwisemadness.tensurafactionspawn.capital.CapitalLocator;
+import org.bitwisemadness.tensurafactionspawn.capital.CapitalRegistry;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRule;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
 import org.bitwisemadness.tensurafactionspawn.spawn.FactionSpawnService;
@@ -32,8 +35,42 @@ public final class FactionSpawnCommand {
         dispatcher.register(Commands.literal("tensurafactionspawn")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.literal("rules").executes(context -> listRules(context.getSource())))
+                .then(Commands.literal("capitals").executes(context -> listCapitals(context.getSource())))
+                .then(Commands.literal("locate-all").executes(context -> locateAll(context.getSource())))
                 .then(Commands.literal("locate").executes(context -> locate(context.getSource())))
                 .then(Commands.literal("relocate").executes(context -> relocate(context.getSource()))));
+    }
+
+    private static int locateAll(CommandSourceStack source) {
+        int queued = CapitalLocator.startLocating(source.getServer());
+        if (queued == 0) {
+            source.sendSuccess(() -> Component.literal(
+                    "All registered capitals are already located (or no spawn rules are loaded)."), false);
+            return 0;
+        }
+        source.sendSuccess(() -> Component.literal(
+                "Locating " + queued + " capital tag(s) - one search per server tick, results accumulate in the"
+                        + " registry. Query with /tensurafactionspawn capitals."), false);
+        return queued;
+    }
+
+    private static int listCapitals(CommandSourceStack source) {
+        var all = CapitalRegistry.get(source.getServer().overworld().getDataStorage()).all();
+        if (all.isEmpty()) {
+            source.sendFailure(Component.literal(
+                    "No capitals located yet. Run /tensurafactionspawn locate-all to start the search."));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.literal("Located capitals (" + all.size() + "):"), false);
+        for (CapitalEntry entry : all.values()) {
+            source.sendSuccess(() -> Component.literal(" - " + entry.tagLocation()
+                    + " at " + entry.position().toShortString()
+                    + " in " + entry.dimension().location()), false);
+        }
+        if (CapitalLocator.isRunning()) {
+            source.sendSuccess(() -> Component.literal("(a locate pass is still running)"), false);
+        }
+        return all.size();
     }
 
     private static int listRules(CommandSourceStack source) {
