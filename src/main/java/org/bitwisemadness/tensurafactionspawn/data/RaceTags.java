@@ -22,16 +22,19 @@ public final class RaceTags {
     public static final TagKey<ManasRace> HUMANS = create("humans");
     public static final TagKey<ManasRace> ELVES = create("elves");
     public static final TagKey<ManasRace> DWARVES = create("dwarves");
-    public static final TagKey<ManasRace> SPIRITFOLK = create("spiritfolk");
+    public static final TagKey<ManasRace> CELESTIALS = create("celestials");
+    public static final TagKey<ManasRace> HELL = create("hell");
     public static final TagKey<ManasRace> BEASTFOLK = create("beastfolk");
     public static final TagKey<ManasRace> AQUATIC = create("aquatic");
     public static final TagKey<ManasRace> INSECT = create("insect");
     public static final TagKey<ManasRace> MONSTERS = create("monsters");
     public static final TagKey<ManasRace> GOBLINS = create("goblins");
     public static final TagKey<ManasRace> LIZARDMAN = create("lizardman");
+    public static final TagKey<ManasRace> GIANTS = create("giants");
 
     public static final List<TagKey<ManasRace>> ALL =
-            List.of(HUMANS, ELVES, DWARVES, SPIRITFOLK, BEASTFOLK, AQUATIC, INSECT, MONSTERS, GOBLINS, LIZARDMAN);
+            List.of(HUMANS, ELVES, DWARVES, CELESTIALS, HELL, BEASTFOLK, AQUATIC, INSECT, MONSTERS, GOBLINS,
+                    LIZARDMAN, GIANTS);
 
     private RaceTags() {
     }

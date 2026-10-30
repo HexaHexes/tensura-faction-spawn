@@ -20,8 +20,6 @@
     "tensura:orc_disaster",
     "tensura:spirit_boar",
     "tensura:divine_boar",
-    "tensura:giant",
-    "tensura:ancient_giant",
-    "tensura:divine_giant"
+    "stextras:kobold"
   ]
 }

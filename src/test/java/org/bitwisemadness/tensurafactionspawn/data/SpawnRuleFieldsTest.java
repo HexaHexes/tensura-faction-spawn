@@ -26,8 +26,8 @@ class SpawnRuleFieldsTest {
     void parsesACompleteRule() {
         SpawnRuleFields fields = SpawnRuleFields.fromJson(json("""
                 {
-                  "race": "#tensura_faction_spawn:spiritfolk",
-                  "structures": "#tensura_faction_spawn:capital/spiritfolk",
+                  "race": "#tensura_faction_spawn:celestials",
+                  "structures": "#tensura_faction_spawn:capital/celestials",
                   "dimension": "tensura:hell",
                   "search_radius": 512,
                   "expand_on_missing": false,
@@ -36,8 +36,8 @@ class SpawnRuleFieldsTest {
                 }
                 """));
 
-        assertEquals("tensura_faction_spawn:spiritfolk", fields.race());
-        assertEquals("tensura_faction_spawn:capital/spiritfolk", fields.structures());
+        assertEquals("tensura_faction_spawn:celestials", fields.race());
+        assertEquals("tensura_faction_spawn:capital/celestials", fields.structures());
         assertEquals("tensura:hell", fields.dimension());
         assertEquals(512, fields.searchRadius());
         assertFalse(fields.expandOnMissing());

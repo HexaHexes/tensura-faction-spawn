@@ -42,7 +42,8 @@ tags.
   `getRespawnDimension` is per-race — only `LesserDaemonRace` overrides it (to
   `tensura:hell`) and the whole daemon chain inherits that override, so a
   hardcoded faction dimension would misplace addon races that join the
-  spiritfolk tag later. `set_respawn` is a tri-state
+  celestials or hell tags later (the spiritfolk faction was split into
+  celestials and hell per the dimension-home criterion). `set_respawn` is a tri-state
   (`never`/`if_unset`/`always`, default `if_unset`); in a bedless dimension
   (`tensura:hell` has `bed_works: false`) `if_unset` skips rather than store a
   point vanilla respawn would ignore.

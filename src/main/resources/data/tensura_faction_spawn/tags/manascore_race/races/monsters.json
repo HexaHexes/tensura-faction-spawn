@@ -13,6 +13,9 @@
     "tensura:ghoul",
     "tensura:vampire_lord",
     "tensura:vampire_overcomer",
-    "tensura:divine_vampire"
+    "tensura:divine_vampire",
+    "mysticism:forgotten",
+    "mysticism:sculk_worm",
+    "tensuramoreskills:bloodfiend"
   ]
 }
