@@ -7,6 +7,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import org.bitwisemadness.tensurafactionspawn.capital.CapitalLocator;
 import org.bitwisemadness.tensurafactionspawn.command.FactionSpawnCommand;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
 import org.bitwisemadness.tensurafactionspawn.spawn.RaceSetHandler;
@@ -44,6 +45,7 @@ public final class TensuraFactionSpawn {
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListener);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(RaceSetHandler::onServerTick);
+        NeoForge.EVENT_BUS.addListener(CapitalLocator::onServerTick);
 
         LOGGER.info("Tensura Faction Spawn initialized");
     }

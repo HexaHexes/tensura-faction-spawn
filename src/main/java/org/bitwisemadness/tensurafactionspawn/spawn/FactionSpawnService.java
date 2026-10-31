@@ -14,6 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import org.bitwisemadness.tensurafactionspawn.TensuraFactionSpawn;
+import org.bitwisemadness.tensurafactionspawn.capital.CapitalEntry;
+import org.bitwisemadness.tensurafactionspawn.capital.CapitalRegistry;
 import org.bitwisemadness.tensurafactionspawn.data.RespawnMode;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRule;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
@@ -73,12 +75,32 @@ public final class FactionSpawnService {
             return Optional.empty();
         }
 
-        BlockPos origin = level.getSharedSpawnPos();
-        Optional<BlockPos> target = findNearest(level, rule, origin);
-        if (target.isEmpty()) {
-            return Optional.empty();
+        // Consult the per-world capital cache first: the O(radius^2) structure
+        // search runs once per capital, and every later arrival reuses the
+        // located position (spec §17 CapitalStateRepository seed).
+        CapitalEntry cached = CapitalRegistry.get(server.overworld().getDataStorage())
+                .get(rule.structures().location()).orElse(null);
+        BlockPos target;
+        if (cached != null) {
+            ServerLevel cachedLevel = server.getLevel(cached.dimension());
+            if (cachedLevel == null) {
+                TensuraFactionSpawn.LOGGER.warn("Capital {} is in unloaded dimension {}",
+                        rule.structures().location(), cached.dimension().location());
+                return Optional.empty();
+            }
+            level = cachedLevel;
+            target = cached.position();
+        } else {
+            BlockPos origin = level.getSharedSpawnPos();
+            Optional<BlockPos> located = findNearest(level, rule, origin);
+            if (located.isEmpty()) {
+                return Optional.empty();
+            }
+            CapitalRegistry.get(server.overworld().getDataStorage())
+                    .put(rule.structures().location(), dimensionKey, located.get());
+            target = located.get();
         }
-        return Optional.of(place(player, level, rule, target.get()));
+        return Optional.of(place(player, level, rule, target));
     }
 
     /**
