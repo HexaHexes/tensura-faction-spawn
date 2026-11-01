@@ -1,11 +1,24 @@
 {
   "replace": false,
   "values": [
-    "tensura:lizardman",
-    "tensura:dragonewt",
-    "tensura:true_dragonewt",
-    "tensura:divine_dragon",
     "mysticism:attuned_wyrm",
-    "mysticism:dragonoid"
+    "mysticism:dragonoid",
+    "mysticism:frostcoil_sea_serpent",
+    "mysticism:frostwrought_leviathan",
+    "mysticism:greater_glacier_wyrm",
+    "mysticism:greater_pyre_wyrm",
+    "mysticism:lesser_glacier_wyrm",
+    "mysticism:lesser_pyre_wyrm",
+    "mysticism:rimefang_drake",
+    "mysticism:rimeblight_hydra",
+    "mysticism:scorchtail_salamander",
+    "mysticism:scorchtalon_wyvern",
+    "mysticism:sundeity_loong",
+    "mysticism:sunfire_lindwurm",
+    "mysticism:true_dragonoid",
+    "tensura:divine_dragon",
+    "tensura:dragonewt",
+    "tensura:lizardman",
+    "tensura:true_dragonewt"
   ]
 }

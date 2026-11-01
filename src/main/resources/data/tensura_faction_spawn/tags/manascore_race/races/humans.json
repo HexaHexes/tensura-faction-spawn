@@ -1,10 +1,13 @@
 {
   "replace": false,
   "values": [
-    "tensura:human",
-    "tensura:human_saint",
-    "tensura:enlightened_human",
+    "mysticism:bound_enlightenment",
+    "mysticism:heavenly_restriction",
+    "mysticism:restricted_human",
+    "mysticism:restricted_saint",
     "tensura:divine_human",
-    "mysticism:restricted_human"
+    "tensura:enlightened_human",
+    "tensura:human",
+    "tensura:human_saint"
   ]
 }

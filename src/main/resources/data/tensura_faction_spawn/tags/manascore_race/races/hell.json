@@ -1,7 +1,11 @@
 {
   "replace": false,
   "values": [
-    "tensura:lesser_daemon",
-    "mysticism:phantom"
+    "mysticism:field_officer",
+    "mysticism:general",
+    "mysticism:mystic_angel",
+    "mysticism:phantom",
+    "mysticism:staff_officer",
+    "tensura:lesser_daemon"
   ]
 }
