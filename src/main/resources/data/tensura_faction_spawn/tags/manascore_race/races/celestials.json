@@ -1,7 +1,26 @@
 {
   "replace": false,
   "values": [
+    "mysticism:arch_angel",
+    "mysticism:arch_fallen",
+    "mysticism:cherub",
+    "mysticism:divine_elemental",
+    "mysticism:divine_majin_elemental",
+    "mysticism:elemental_lord",
+    "mysticism:fallen",
+    "mysticism:fallen_arch_angel",
+    "mysticism:fallen_cherub",
+    "mysticism:fallen_greater_angel",
+    "mysticism:fallen_lesser_angel",
+    "mysticism:fallen_lord",
+    "mysticism:fallen_seraph",
+    "mysticism:greater_angel",
+    "mysticism:greater_elemental",
+    "mysticism:greater_fallen",
     "mysticism:lesser_angel",
-    "mysticism:lesser_elemental"
+    "mysticism:lesser_elemental",
+    "mysticism:lesser_fallen",
+    "mysticism:medium_elemental",
+    "mysticism:seraph"
   ]
 }
