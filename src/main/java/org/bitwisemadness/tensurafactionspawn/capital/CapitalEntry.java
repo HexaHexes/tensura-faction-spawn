@@ -1,11 +1,10 @@
 package org.bitwisemadness.tensurafactionspawn.capital;
 
+import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-
-import java.util.Objects;
 
 /**
  * One registered capital: the faction's capital tag, the dimension it lives

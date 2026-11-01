@@ -6,7 +6,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.bitwisemadness.tensurafactionspawn.capital.CapitalLocator;
 import org.bitwisemadness.tensurafactionspawn.command.FactionSpawnCommand;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
