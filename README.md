@@ -88,6 +88,21 @@ capital yet and stay where they are until dedicated capital datapacks land.
 /tensurafactionspawn relocate   # move the caller there now
 ```
 
+## Capital waypoints (Xaero, optional)
+
+On login the server sends every located faction capital to the joining
+player; the client offers each one as a map waypoint in Xaero's Minimap and
+World Map - **once per capital per world**. Deleting a waypoint in Xaero
+keeps it deleted, and capitals added later are offered on the next login.
+Capitals in other dimensions (the Elemental Realm, Tensura's hell) are
+offered when you first visit those dimensions.
+
+The feature is optional: without Xaero's Minimap installed it silently does
+nothing. Client config (`config/tensura_faction_spawn-client.toml`):
+
+- `capitalWaypoints.enabled` (default `true`) - set to `false` to never
+  offer capital waypoints.
+
 ## Credits
 
 - Built on [NeoForge](https://neoforged.net/).

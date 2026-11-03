@@ -28,6 +28,12 @@ sourceSets {
         compileClasspath += sourceSets.main.output + configurations.compileClasspath
         runtimeClasspath += output + sourceSets.main.output + configurations.runtimeClasspath
     }
+    // The unit tests exercise the payload wire format against the real codec
+    // classes, so they join main's classpath like the gametest set does.
+    test {
+        compileClasspath += sourceSets.main.output + configurations.compileClasspath
+        runtimeClasspath += output + sourceSets.main.output + configurations.runtimeClasspath
+    }
 }
 
 neoForge {
@@ -122,6 +128,10 @@ configurations {
 dependencies {
     // The boundary contract (spec §3.2).
     implementation 'org.bitwisemadness.capitalapi:capital_api:1.0.0-alpha.1'
+
+    // Xaero's Minimap: the waypoint feature's compile surface (optional at
+    // runtime - every call degrades to a no-op when Xaero is absent).
+    compileOnly "curse.maven:xaeros-minimap-263420:9067173" // xaerominimap 1.21.1-neoforge-26.6.0
 
     gametestMods 'curse.maven:architectury-419699:8492726'
     gametestMods 'curse.maven:geckolib-388172:8893490'

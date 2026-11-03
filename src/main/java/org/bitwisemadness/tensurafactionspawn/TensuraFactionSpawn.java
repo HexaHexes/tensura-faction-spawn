@@ -3,7 +3,10 @@ package org.bitwisemadness.tensurafactionspawn;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -13,6 +16,10 @@ import org.bitwisemadness.tensurafactionspawn.capital.CapitalLocator;
 import org.bitwisemadness.tensurafactionspawn.command.FactionSpawnCommand;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
 import org.bitwisemadness.tensurafactionspawn.spawn.FactionSpawnService;
+import org.bitwisemadness.tensurafactionspawn.waypoints.CapitalWaypointConfig;
+import org.bitwisemadness.tensurafactionspawn.waypoints.CapitalWaypointNet;
+import org.bitwisemadness.tensurafactionspawn.waypoints.CapitalWaypointSync;
+import org.bitwisemadness.tensurafactionspawn.waypoints.client.CapitalWaypointClient;
 import org.slf4j.Logger;
 
 /**
@@ -38,12 +45,13 @@ public final class TensuraFactionSpawn {
     public static final String MOD_ID = "tensura_faction_spawn";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public TensuraFactionSpawn(IEventBus modBus) {
+    public TensuraFactionSpawn(IEventBus modBus, ModContainer container) {
         // Server-side only: spawn rules come from the server datapack, and the
         // relocation itself is authoritative on the server.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListener);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(CapitalLocator::onServerTick);
+        NeoForge.EVENT_BUS.addListener(CapitalWaypointSync::onPlayerLoggedIn);
 
         // The engine half of the boundary contract (spec §5.1): the race
         // integration triggers arrival through this registration.
@@ -53,6 +61,14 @@ public final class TensuraFactionSpawn {
                 return FactionSpawnService.relocate(player);
             }
         });
+
+        // The capital-waypoint feature (#38): the payload registration is
+        // common-side; the Xaero registration is client-only and dist-gated.
+        modBus.addListener(CapitalWaypointNet::register);
+        if (FMLEnvironment.dist.isClient()) {
+            NeoForge.EVENT_BUS.addListener(CapitalWaypointClient::onClientTick);
+        }
+        container.registerConfig(ModConfig.Type.CLIENT, CapitalWaypointConfig.SPEC);
 
         LOGGER.info("Tensura Faction Spawn initialized");
     }
