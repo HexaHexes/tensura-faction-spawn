@@ -41,9 +41,11 @@ versionRange = "[2.0,)"
 ordering = "AFTER"
 side = "BOTH"
 
+
+# The boundary contract the engine implements (spec section 3.2).
 [[dependencies.${mod_id}]]
-modId = "manascore"
+modId = "capital_api"
 type = "required"
-versionRange = "[4.0,)"
-ordering = "AFTER"
+versionRange = "[1.0.0-alpha.1,)"
+ordering = "BEFORE"
 side = "BOTH"

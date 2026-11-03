@@ -42,8 +42,8 @@ public final class FactionSpawnGameTests {
                 .findFirst()
                 .orElse(null);
         helper.assertTrue(humans != null, "expected the shipped 'humans' rule");
-        helper.assertTrue(humans.race().location().toString().equals("tensura_faction_spawn:humans"),
-                "race tag mismatch: " + humans.race().location());
+        helper.assertTrue(humans.race().toString().equals("tensura_faction_spawn:humans"),
+                "race tag mismatch: " + humans.race());
         helper.assertTrue(humans.structures().location().toString().equals("tensura_faction_spawn:capital/humans"),
                 "structure tag mismatch: " + humans.structures().location());
         helper.succeed();

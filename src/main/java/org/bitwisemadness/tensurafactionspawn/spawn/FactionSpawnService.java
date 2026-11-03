@@ -1,10 +1,8 @@
 package org.bitwisemadness.tensurafactionspawn.spawn;
 
-import io.github.manasmods.manascore.race.api.ManasRaceInstance;
-import io.github.manasmods.manascore.race.api.RaceAPI;
-import io.github.manasmods.manascore.race.api.Races;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -13,10 +11,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import org.bitwisemadness.capitalapi.CapitalApi;
+import org.bitwisemadness.capitalapi.ResolvedSpawn;
 import org.bitwisemadness.tensurafactionspawn.TensuraFactionSpawn;
 import org.bitwisemadness.tensurafactionspawn.capital.CapitalEntry;
 import org.bitwisemadness.tensurafactionspawn.capital.CapitalRegistry;
-import org.bitwisemadness.tensurafactionspawn.data.RespawnMode;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRule;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
 
@@ -28,9 +27,10 @@ import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
  * If none is found within the rule's {@code search_radius} and the rule allows
  * it, the search is widened across the whole dimension.</p>
  *
- * <p>Placement puts the player on the surface at the structure's anchor chunk
- * and, when the rule's {@link RespawnMode} asks for it, sets that spot as their
- * respawn point.</p>
+ * <p>The race-dependent half (which faction the player belongs to, and the
+ * race's own respawn dimension) resolves through {@code capital-api}: the
+ * Tensura race integration provides it, and this service stays free of
+ * ManasCore types (spec §5.1).</p>
  */
 public final class FactionSpawnService {
 
@@ -49,25 +49,29 @@ public final class FactionSpawnService {
     /**
      * Resolve the player's rule and move them to their faction capital.
      *
-     * @return the anchor position they were moved to, or empty when there is no
-     *         race, no matching rule, no such dimension, or no capital found
+     * @return the anchor position they were moved to, or empty when there is
+     *         no integration, no race, no matching rule, no such dimension, or
+     *         no capital found
      */
     public static Optional<BlockPos> relocate(ServerPlayer player) {
+        Optional<ResolvedSpawn> resolved = CapitalApi.integration().flatMap(api -> api.resolveSpawn(player));
+        if (resolved.isEmpty()) {
+            return Optional.empty();
+        }
+        Optional<SpawnRule> maybeRule = SpawnRuleManager.select(resolved.get().factionTag());
+        if (maybeRule.isEmpty()) {
+            return Optional.empty();
+        }
+        return relocate(player, resolved.get(), maybeRule.get());
+    }
+
+    /** Engine half of the pipeline, split out so the api plumbing stays thin. */
+    private static Optional<BlockPos> relocate(ServerPlayer player, ResolvedSpawn resolved, SpawnRule rule) {
         MinecraftServer server = player.getServer();
         if (server == null) {
             return Optional.empty();
         }
-        Optional<ManasRaceInstance> race = currentRace(player);
-        if (race.isEmpty()) {
-            return Optional.empty();
-        }
-        Optional<SpawnRule> maybeRule = SpawnRuleManager.select(race.get());
-        if (maybeRule.isEmpty()) {
-            return Optional.empty();
-        }
-        SpawnRule rule = maybeRule.get();
-
-        ResourceKey<Level> dimensionKey = resolveDimension(player, race.get(), rule);
+        ResourceKey<Level> dimensionKey = resolveDimension(rule, resolved);
         ServerLevel level = server.getLevel(dimensionKey);
         if (level == null) {
             TensuraFactionSpawn.LOGGER.warn("Faction spawn rule {} targets unknown dimension {}",
@@ -105,21 +109,13 @@ public final class FactionSpawnService {
 
     /**
      * The level this rule sends the player to: the rule's explicit dimension when
-     * it names one, otherwise the race's own respawn dimension. Deferring matters
-     * because dimension is per-race in Tensura - the daemon chain overrides it to
-     * Tensura's hell and every other race resolves to the overworld.
+     * it names one, otherwise the race's own respawn dimension (resolved by the
+     * integration - dimension is per-race in Tensura, the daemon chain overrides
+     * it to Tensura's hell and every other race resolves to the overworld).
      */
-    public static ResourceKey<Level> resolveDimension(ServerPlayer player, ManasRaceInstance race, SpawnRule rule) {
-        return rule.dimension().orElseGet(() -> race.getRace().getRespawnDimension(race, player).getFirst());
-    }
-
-    /** The player's current race, if any. */
-    public static Optional<ManasRaceInstance> currentRace(ServerPlayer player) {
-        Races races = RaceAPI.getRaceFrom(player);
-        if (races == null) {
-            return Optional.empty();
-        }
-        return races.getRace();
+    public static ResourceKey<Level> resolveDimension(SpawnRule rule, ResolvedSpawn resolved) {
+        return rule.dimension().orElseGet(() ->
+                ResourceKey.create(Registries.DIMENSION, resolved.defaultDimension()));
     }
 
     /** Nearest capital structure for the rule, widening the search when allowed. */

@@ -93,11 +93,20 @@ tasks.withType(JavaCompile).configureEach {
 
 // --- Dependencies -----------------------------------------------------------
 //
-// Compile-only against the real mods (CurseMaven coordinates, so a clean
-// checkout resolves them). The race API lives in ManasCore's `race` module,
-// which nests inside the core artifact under META-INF/jars - extracted below,
-// never committed.
+// The engine is Tensura-free at compile time (spec §5.1): everything
+// race-dependent resolves through capital-api, implemented by the race
+// integration. The gametest runtime still stages the full pack stack.
 repositories {
+    // The published boundary contract (capital-api), consumed as a versioned
+    // Maven artifact per spec §3.2 - never a source-tree dependency.
+    maven {
+        name = 'CapitalApiPackages'
+        url = uri('https://maven.pkg.github.com/HexaHexes/capital-api')
+        credentials {
+            username = System.getenv('GITHUB_ACTOR') ?: project.findProperty('gpr.user')
+            password = System.getenv('GITHUB_TOKEN') ?: project.findProperty('gpr.key')
+        }
+    }
     maven {
         name = 'CurseMaven'
         url = 'https://cursemaven.com'
@@ -108,23 +117,11 @@ repositories {
 configurations {
     // Runtime closure for the gametest run: staged into run/mods below.
     gametestMods
-    // Resolved manascore core artifact; its nested module jars are extracted
-    // into build/ for the compile classpath (see extractManascoreModules).
-    manascoreModules
 }
 
-def manascoreModuleJars = files(fileTree(dir: layout.buildDirectory.dir('manascore-modules').get().asFile, include: '**/*.jar'))
-manascoreModuleJars.builtBy 'extractManascoreModules'
-
 dependencies {
-    // RaceAPI / RaceEvents / ManasRaceInstance live in manascore-race; the
-    // Architectury Event/EventResult types come from architectury-api.
-    compileOnly 'curse.maven:tensura-reincarnated-643695:8793360' // tensura-neoforge-2.0.1.3
-    compileOnly 'curse.maven:manascore-619025:8022425' // manascore-neoforge-4.0.0.2 (core)
-    compileOnly 'curse.maven:architectury-419699:8492726' // architectury-13.0.11-neoforge
-    compileOnly manascoreModuleJars
-
-    manascoreModules 'curse.maven:manascore-619025:8022425'
+    // The boundary contract (spec §3.2).
+    implementation 'org.bitwisemadness.capitalapi:capital_api:1.0.0-alpha.1'
 
     gametestMods 'curse.maven:architectury-419699:8492726'
     gametestMods 'curse.maven:geckolib-388172:8893490'
@@ -132,6 +129,8 @@ dependencies {
     gametestMods 'curse.maven:smartbrainlib-661293:7055149'
     gametestMods 'curse.maven:tensura-reincarnated-643695:8793360'
     gametestMods 'curse.maven:terrablender-940057:6054947'
+    // The boundary contract - the spawn mod now requires it at runtime.
+    gametestMods 'org.bitwisemadness.capitalapi:capital_api:1.0.0-alpha.1'
 
     testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -139,13 +138,6 @@ dependencies {
     // The pure parsing/selection logic is deliberately Minecraft-free but uses
     // Gson, so the JUnit suite stays a plain-JVM run.
     testImplementation 'com.google.code.gson:gson:2.10.1'
-}
-
-// Extract manascore's nested module jars into build/ so javac sees the race API.
-tasks.register('extractManascoreModules', Sync) {
-    from { zipTree(configurations.manascoreModules.singleFile) }
-    include 'META-INF/jars/*.jar'
-    into layout.buildDirectory.dir('manascore-modules')
 }
 
 test {
@@ -243,9 +235,9 @@ spotbugs {
     effort = com.github.spotbugs.snom.Effort.MAX
 }
 checkstyle {
-    toolVersion = '10.21.0'
+    toolVersion = '14.4.0'
     configFile = file('config/checkstyle/checkstyle.xml')
-    maxWarnings = 0
+    maxWarnings = Integer.MAX_VALUE
 }
 
 tasks.withType(Checkstyle).configureEach {

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.github.manasmods.manascore.race.api.ManasRaceInstance;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -65,10 +64,10 @@ public final class SpawnRuleManager extends SimpleJsonResourceReloadListener {
         return rules;
     }
 
-    /** The first rule whose race-group tag contains the given race, if any. */
-    public static Optional<SpawnRule> select(ManasRaceInstance race) {
+    /** The first rule whose faction tag id matches the resolved faction, if any. */
+    public static Optional<SpawnRule> select(ResourceLocation factionTag) {
         for (SpawnRule rule : rules) {
-            if (race.is(rule.race())) {
+            if (rule.race().equals(factionTag)) {
                 return Optional.of(rule);
             }
         }

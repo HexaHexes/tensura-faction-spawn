@@ -1,7 +1,6 @@
 package org.bitwisemadness.tensurafactionspawn.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.manasmods.manascore.race.api.ManasRaceInstance;
 import java.util.Optional;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -9,6 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import org.bitwisemadness.capitalapi.CapitalApi;
+import org.bitwisemadness.capitalapi.ResolvedSpawn;
 import org.bitwisemadness.tensurafactionspawn.capital.CapitalEntry;
 import org.bitwisemadness.tensurafactionspawn.capital.CapitalLocator;
 import org.bitwisemadness.tensurafactionspawn.capital.CapitalRegistry;
@@ -82,7 +83,7 @@ public final class FactionSpawnCommand {
         source.sendSuccess(() -> Component.literal("Faction spawn rules (" + rules.size() + "):"), false);
         for (SpawnRule rule : rules) {
             source.sendSuccess(() -> Component.literal(" - " + rule.id()
-                    + " race=#" + rule.race().location()
+                    + " race=#" + rule.race()
                     + " structures=#" + rule.structures().location()
                     + " dim=" + rule.dimension().map(key -> key.location().toString()).orElse("deferred")
                     + " respawn=" + rule.respawnMode().name().toLowerCase()), false);
@@ -92,18 +93,18 @@ public final class FactionSpawnCommand {
 
     private static int locate(CommandSourceStack source) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
-        Optional<ManasRaceInstance> race = FactionSpawnService.currentRace(player);
-        if (race.isEmpty()) {
+        Optional<ResolvedSpawn> resolved = CapitalApi.integration().flatMap(api -> api.resolveSpawn(player));
+        if (resolved.isEmpty()) {
             source.sendFailure(Component.literal("You have no Tensura race."));
             return 0;
         }
-        Optional<SpawnRule> rule = SpawnRuleManager.select(race.get());
+        Optional<SpawnRule> rule = SpawnRuleManager.select(resolved.get().factionTag());
         if (rule.isEmpty()) {
             source.sendFailure(Component.literal("No faction spawn rule matches your race."));
             return 0;
         }
         ServerLevel level = source.getServer().getLevel(
-                FactionSpawnService.resolveDimension(player, race.get(), rule.get()));
+                FactionSpawnService.resolveDimension(rule.get(), resolved.get()));
         if (level == null) {
             source.sendFailure(Component.literal("Rule targets an unknown or missing dimension."));
             return 0;
@@ -114,7 +115,7 @@ public final class FactionSpawnCommand {
             return 0;
         }
         BlockPos pos = target.get();
-        source.sendSuccess(() -> Component.literal("Capital for " + race.get().getDisplayName().getString()
+        source.sendSuccess(() -> Component.literal("Capital for " + resolved.get().factionTag()
                 + " -> " + pos.toShortString() + " in " + level.dimension().location()), false);
         return 1;
     }
