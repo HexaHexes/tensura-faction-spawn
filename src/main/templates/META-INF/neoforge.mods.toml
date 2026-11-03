@@ -49,3 +49,18 @@ type = "required"
 versionRange = "[1.0.0-alpha.1,)"
 ordering = "BEFORE"
 side = "BOTH"
+# The capital-waypoint feature (spike #38): optional - everything degrades to
+# a no-op when either mod is absent. Versions pinned per the spike's evidence.
+[[dependencies.${mod_id}]]
+modId = "xaerominimap"
+type = "optional"
+versionRange = "[26.6,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "xaeroworldmap"
+type = "optional"
+versionRange = "[1.47,)"
+ordering = "NONE"
+side = "CLIENT"
