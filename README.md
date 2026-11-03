@@ -23,8 +23,9 @@ from separate capital datapacks.
 |---|---|---|
 | Required | Minecraft | - |
 | Required | NeoForge | - |
-| Required | Tensura: Reincarnated | Provides the race system |
-| Required | ManasCore | Provides races, race tags and the race-set signal |
+| Required | Capital API | The boundary contract this engine implements (spec §3.2) |
+| Required | Capital Tensura Reincarnated | The race integration - the SET_RACE hook and the race-group tags |
+| Required | Tensura: Reincarnated | Provides the race system and the bundled bootstrap villages |
 
 ## Datapack reference
 
