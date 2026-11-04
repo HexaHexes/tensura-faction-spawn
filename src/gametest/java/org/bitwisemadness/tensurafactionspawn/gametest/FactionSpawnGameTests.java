@@ -9,6 +9,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import org.bitwisemadness.capitalapi.CapitalApi;
 import org.bitwisemadness.tensurafactionspawn.TensuraFactionSpawn;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRule;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
@@ -60,6 +61,22 @@ public final class FactionSpawnGameTests {
 
         Optional<BlockPos> target = FactionSpawnService.findNearest(level, humans, level.getSharedSpawnPos());
         helper.assertTrue(target.isEmpty(), "no capitals are registered yet, so no target should be found");
+        helper.succeed();
+    }
+
+    /**
+     * The boundary contract is wired across the three-jar split: the race
+     * integration (a separate jar, staged into this runtime) registered its
+     * resolver at construct time, and this engine registered its relocation
+     * side. If either registration is missing, the split's runtime wiring is
+     * broken and the sweep would discover it the hard way.
+     */
+    @GameTest(template = "empty")
+    public static void boundary_contract_is_wired(GameTestHelper helper) {
+        helper.assertTrue(CapitalApi.integration().isPresent(),
+                "the race integration did not register its resolver");
+        helper.assertTrue(CapitalApi.engine().isPresent(),
+                "the spawn engine did not register its relocation side");
         helper.succeed();
     }
 
