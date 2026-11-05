@@ -144,6 +144,18 @@ dependencies {
     // The race integration joins the gametest runtime so the boundary test
     // proves the cross-jar registration (both sides of capital-api present).
     gametestMods 'org.bitwisemadness.capitaltensurareincarnated:capital_tensura_reincarnated:1.0.0-alpha.2'
+    // The full staged ecosystem boots in this runtime: the generation engine
+    // and every capital jar, so the combined boot and the full capital-tag
+    // surface are verified per PR, not discovered in the instance.
+    gametestMods 'org.bitwisemadness.capitalcore:capital_core:1.0.0-alpha.04'
+    gametestMods 'org.bitwisemadness.tensuracapitalmortals:tensura_capital_mortals:1.0.0-alpha.1'
+    gametestMods 'org.bitwisemadness.tensuracapitalwilds:tensura_capital_wilds:1.0.0-alpha.1'
+    gametestMods 'org.bitwisemadness.tensuracapitalgiants:tensura_capital_giants:1.0.0-alpha.1'
+    gametestMods 'org.bitwisemadness.tensuracapitalcelestials:tensura_capital_celestials:1.0.0-alpha.1'
+    gametestMods 'org.bitwisemadness.tensuracapitalhell:tensura_capital_hell:1.0.0-alpha.1'
+    gametestMods 'org.bitwisemadness.tensuracapitalbeastfolk:tensura_capital_beastfolk:1.0.0-alpha.1'
+    gametestMods 'org.bitwisemadness.tensuracapitalinsect:tensura_capital_insect:1.0.0-alpha.1'
+    gametestMods 'org.bitwisemadness.tensuracapitalmonsters:tensura_capital_monsters:1.0.0-alpha.1'
 
     testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
