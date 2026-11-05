@@ -1,7 +1,0 @@
-{
-  "race": "#tensura_faction_spawn:monsters",
-  "structures": "#tensura_faction_spawn:capital/monsters",
-  "search_radius": 128,
-  "expand_on_missing": true,
-  "priority": 0
-}

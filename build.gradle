@@ -56,6 +56,17 @@ neoForge {
             type = "gameTestServer"
             gameDirectory = project.layout.projectDirectory.dir('run')
         }
+
+        // Regenerates src/generated/resources - the spawn rules and capital
+        // structure tags (issue #34). Boots FML like every run, so the staged
+        // dependency stack below is staged first.
+        data {
+            data()
+            gameDirectory = project.layout.projectDirectory.dir('run')
+            programArguments.addAll '--mod', mod_id, '--all',
+                    '--output', file('src/generated/resources').absolutePath,
+                    '--existing', file('src/main/resources').absolutePath
+        }
     }
 
     mods {
@@ -91,6 +102,10 @@ def generateModMetadata = tasks.register('generateModMetadata', ProcessResources
     into layout.buildDirectory.dir('generated/sources/modMetadata')
 }
 sourceSets.main.resources.srcDir generateModMetadata
+// The generated datapack is committed and packaged as part of the mod's
+// resources: datagen owns data/** (issue #34) and the CI drift gate keeps
+// the committed tree identical to what runData produces.
+sourceSets.main.resources.srcDir 'src/generated/resources'
 neoForge.ideSyncTask generateModMetadata
 
 tasks.withType(JavaCompile).configureEach {
@@ -166,11 +181,18 @@ tasks.register('prepareGametestMods', Sync) {
     into 'run/mods'
 }
 
-// Grade the run on the log summary, not the exit code: the GameTestServer prints
-// "All N required tests passed :)" when every required test succeeds. Keep
-// expectedTests in sync with the @GameTest methods in src/gametest.
-tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+// Both the GameTest run and the data run boot FML against the run/ directory,
+// so both need the dependency stack staged first (the data run constructs the
+// mod, which registers the capital-api engine).
+tasks.matching { it.name == 'runGameTestServer' || it.name == 'runData' }.configureEach {
     dependsOn 'prepareGametestMods'
+}
+
+// Grade the GameTest run on the log summary, not the exit code: the
+// GameTestServer prints "All N required tests passed :)" when every required
+// test succeeds. Keep expectedTests in sync with the @GameTest methods in
+// src/gametest.
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
     def expectedTests = 7
     doLast {
         def log = file('run/logs/latest.log')

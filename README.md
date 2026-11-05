@@ -51,6 +51,18 @@ dwarves resolve to Tensura's dwarf villages, goblins (and orcs) to goblin and or
 villages, and lizardmen to lizardmen towers. Humans and elves have no bundled
 capital yet and stay where they are until dedicated capital datapacks land.
 
+The mod's own datapack files ship from datagen (`./gradlew runData` writes the
+committed `src/generated/resources`, which CI drift-gates), so this wiring is
+regenerated from the tables, never hand-edited:
+
+| Faction | Bundled capital structures |
+|---|---|
+| dwarves | 1 - Tensura's dwarf village |
+| goblins | 7 - the six goblin village variants plus the orc village |
+| lizardman | 2 - the two lizardmen towers |
+| giants | none here - the tag anchor ships from the capital-giants addon |
+| all others | an empty additive anchor; values arrive from capital datapacks |
+
 ### Spawn rules
 
 `data/<namespace>/tensura_faction_spawn/spawn_rules/<id>.json`:

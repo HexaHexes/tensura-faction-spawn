@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -13,6 +14,7 @@ import org.bitwisemadness.capitalapi.CapitalApi;
 import org.bitwisemadness.tensurafactionspawn.TensuraFactionSpawn;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRule;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
+import org.bitwisemadness.tensurafactionspawn.datagen.FactionSpawnContent;
 import org.bitwisemadness.tensurafactionspawn.spawn.FactionSpawnService;
 
 /**
@@ -47,6 +49,17 @@ public final class FactionSpawnGameTests {
                 "race tag mismatch: " + humans.race());
         helper.assertTrue(humans.structures().location().toString().equals("tensura_faction_spawn:capital/humans"),
                 "structure tag mismatch: " + humans.structures().location());
+
+        // Every datagen-produced file must ship and resolve on the live
+        // classpath (issue #34); the resource id drops the data/<ns>/
+        // prefix from the jar-relative path and re-runs table validation.
+        FactionSpawnContent.files().keySet().forEach(path -> {
+            String rest = path.substring(("data/" + TensuraFactionSpawn.MOD_ID + "/").length());
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(TensuraFactionSpawn.MOD_ID, rest);
+            helper.assertTrue(
+                    helper.getLevel().getServer().getResourceManager().getResource(id).isPresent(),
+                    "generated datapack file missing at runtime: " + path);
+        });
         helper.succeed();
     }
 
