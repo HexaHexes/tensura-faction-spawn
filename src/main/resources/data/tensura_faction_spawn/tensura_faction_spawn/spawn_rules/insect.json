@@ -1,7 +1,0 @@
-{
-  "race": "#tensura_faction_spawn:insect",
-  "structures": "#tensura_faction_spawn:capital/insect",
-  "search_radius": 128,
-  "expand_on_missing": true,
-  "priority": 0
-}

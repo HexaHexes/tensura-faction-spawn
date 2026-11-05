@@ -1,0 +1,7 @@
+{
+  "expand_on_missing": true,
+  "priority": 0,
+  "race": "#tensura_faction_spawn:beastfolk",
+  "search_radius": 128,
+  "structures": "#tensura_faction_spawn:capital/beastfolk"
+}

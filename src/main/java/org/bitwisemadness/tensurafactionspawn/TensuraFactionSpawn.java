@@ -8,6 +8,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.bitwisemadness.capitalapi.CapitalApi;
@@ -15,6 +16,8 @@ import org.bitwisemadness.capitalapi.CapitalSpawnEngine;
 import org.bitwisemadness.tensurafactionspawn.capital.CapitalLocator;
 import org.bitwisemadness.tensurafactionspawn.command.FactionSpawnCommand;
 import org.bitwisemadness.tensurafactionspawn.data.SpawnRuleManager;
+import org.bitwisemadness.tensurafactionspawn.datagen.FactionSpawnContent;
+import org.bitwisemadness.tensurafactionspawn.datagen.JsonFilesProvider;
 import org.bitwisemadness.tensurafactionspawn.spawn.FactionSpawnService;
 import org.bitwisemadness.tensurafactionspawn.waypoints.CapitalWaypointConfig;
 import org.bitwisemadness.tensurafactionspawn.waypoints.CapitalWaypointNet;
@@ -52,6 +55,7 @@ public final class TensuraFactionSpawn {
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(CapitalLocator::onServerTick);
         NeoForge.EVENT_BUS.addListener(CapitalWaypointSync::onPlayerLoggedIn);
+        modBus.addListener(this::gatherData);
 
         // The engine half of the boundary contract (spec §5.1): the race
         // integration triggers arrival through this registration.
@@ -75,6 +79,19 @@ public final class TensuraFactionSpawn {
 
     private void onAddReloadListener(AddReloadListenerEvent event) {
         event.addListener(new SpawnRuleManager());
+    }
+
+    /**
+     * Feeds the shipped datapack - the spawn rules and capital structure tags,
+     * ported from the hand-authored originals into the
+     * {@link FactionSpawnContent} tables - into datagen (issue #34).
+     */
+    private void gatherData(GatherDataEvent event) {
+        if (!event.includeServer()) {
+            return;
+        }
+        event.addProvider(new JsonFilesProvider("faction_spawn_datapack",
+                event.getGenerator().getPackOutput(), FactionSpawnContent.files()));
     }
 
     private void onRegisterCommands(RegisterCommandsEvent event) {
