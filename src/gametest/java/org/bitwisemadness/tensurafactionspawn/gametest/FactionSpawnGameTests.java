@@ -8,6 +8,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.bitwisemadness.capitalapi.CapitalApi;
@@ -93,6 +94,28 @@ public final class FactionSpawnGameTests {
         helper.succeed();
     }
 
+    /**
+     * The full staged ecosystem boots in this runtime (the engine, the api,
+     * the integration, the generation engine and every capital jar), and all
+     * twelve faction capital tags resolve to at least one structure. A jar
+     * that fails to load, a duplicate-id conflict, or a typo'd tag shows up
+     * here instead of in the instance.
+     */
+    @GameTest(template = "empty")
+    public static void all_capital_tags_resolve(GameTestHelper helper) {
+        var registry = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE);
+        String[] factions = {"humans", "elves", "dwarves", "celestials", "hell", "beastfolk",
+                "aquatic", "insect", "monsters", "goblins", "lizardman", "giants"};
+        for (String faction : factions) {
+            var tag = TagKey.create(Registries.STRUCTURE,
+                    ResourceLocation.fromNamespaceAndPath("tensura_faction_spawn", "capital/" + faction));
+            var holders = registry.getTag(tag);
+            int count = holders.map(h -> h.size()).orElse(0);
+            helper.assertTrue(count > 0,
+                    "the '" + faction + "' capital tag resolved to " + count + " structures");
+        }
+        helper.succeed();
+    }
     /**
      * The bundled interim capitals (Tensura's own villages) are wired to real,
      * registered structures. Vanilla silently drops unresolvable tag values, so
