@@ -222,7 +222,7 @@ dependencies {
     gametestMods 'org.bitwisemadness.tensuracapitalmonsters:tensura_capital_monsters:1.0.0-alpha.03'
     // The race integration joins the gametest runtime so the boundary test
     // proves the cross-jar registration (both sides of capital-api present).
-    gametestMods 'org.bitwisemadness.capitaltensurareincarnated:capital_tensura_reincarnated:1.0.0-alpha.2'
+    gametestMods 'org.bitwisemadness.capitaltensurareincarnated:capital_tensura_reincarnated:1.0.0-alpha.04'
 
     testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
