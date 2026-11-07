@@ -128,6 +128,58 @@ repositories {
             password = System.getenv('GITHUB_TOKEN') ?: project.findProperty('gpr.key')
         }
     }
+    // The capital jars publish to their own registries (the per-repo template
+    // convention). The alpha.1 copies in the capital-api registry predate the
+    // built capitals and the biome-tag fixes, so the pinned slots resolve
+    // from here.
+    maven {
+        name = 'CapitalCelestialsPackages'
+        url = uri('https://maven.pkg.github.com/HexaHexes/tensura-capital-celestials')
+        credentials {
+            username = System.getenv('GITHUB_ACTOR') ?: project.findProperty('gpr.user')
+            password = System.getenv('GITHUB_TOKEN') ?: project.findProperty('gpr.key')
+        }
+    }
+    maven {
+        name = 'CapitalBeastfolkPackages'
+        url = uri('https://maven.pkg.github.com/HexaHexes/tensura-capital-beastfolk')
+        credentials {
+            username = System.getenv('GITHUB_ACTOR') ?: project.findProperty('gpr.user')
+            password = System.getenv('GITHUB_TOKEN') ?: project.findProperty('gpr.key')
+        }
+    }
+    maven {
+        name = 'CapitalGiantsPackages'
+        url = uri('https://maven.pkg.github.com/HexaHexes/tensura-capital-giants')
+        credentials {
+            username = System.getenv('GITHUB_ACTOR') ?: project.findProperty('gpr.user')
+            password = System.getenv('GITHUB_TOKEN') ?: project.findProperty('gpr.key')
+        }
+    }
+    maven {
+        name = 'CapitalInsectPackages'
+        url = uri('https://maven.pkg.github.com/HexaHexes/tensura-capital-insect')
+        credentials {
+            username = System.getenv('GITHUB_ACTOR') ?: project.findProperty('gpr.user')
+            password = System.getenv('GITHUB_TOKEN') ?: project.findProperty('gpr.key')
+        }
+    }
+    maven {
+        name = 'CapitalMonstersPackages'
+        url = uri('https://maven.pkg.github.com/HexaHexes/tensura-capital-monsters')
+        credentials {
+            username = System.getenv('GITHUB_ACTOR') ?: project.findProperty('gpr.user')
+            password = System.getenv('GITHUB_TOKEN') ?: project.findProperty('gpr.key')
+        }
+    }
+    maven {
+        name = 'CapitalWildsPackages'
+        url = uri('https://maven.pkg.github.com/HexaHexes/tensura-capital-wilds')
+        credentials {
+            username = System.getenv('GITHUB_ACTOR') ?: project.findProperty('gpr.user')
+            password = System.getenv('GITHUB_TOKEN') ?: project.findProperty('gpr.key')
+        }
+    }
     maven {
         name = 'CurseMaven'
         url = 'https://cursemaven.com'
@@ -159,15 +211,15 @@ dependencies {
     // The full staged ecosystem boots in this runtime: the generation engine
     // and every capital jar, so the combined boot and the full capital-tag
     // surface are verified per PR, not discovered in the instance.
-    gametestMods 'org.bitwisemadness.capitalcore:capital_core:1.0.0-alpha.04'
+    gametestMods 'org.bitwisemadness.capitalcore:capital_core:1.0.0-alpha.06'
     gametestMods 'org.bitwisemadness.tensuracapitalmortals:tensura_capital_mortals:1.0.0-alpha.1'
-    gametestMods 'org.bitwisemadness.tensuracapitalwilds:tensura_capital_wilds:1.0.0-alpha.1'
-    gametestMods 'org.bitwisemadness.tensuracapitalgiants:tensura_capital_giants:1.0.0-alpha.1'
-    gametestMods 'org.bitwisemadness.tensuracapitalcelestials:tensura_capital_celestials:1.0.0-alpha.1'
+    gametestMods 'org.bitwisemadness.tensuracapitalwilds:tensura_capital_wilds:1.0.0-alpha.03'
+    gametestMods 'org.bitwisemadness.tensuracapitalgiants:tensura_capital_giants:1.0.0-alpha.03'
+    gametestMods 'org.bitwisemadness.tensuracapitalcelestials:tensura_capital_celestials:1.0.0-alpha.03'
     gametestMods 'org.bitwisemadness.tensuracapitalhell:tensura_capital_hell:1.0.0-alpha.1'
-    gametestMods 'org.bitwisemadness.tensuracapitalbeastfolk:tensura_capital_beastfolk:1.0.0-alpha.1'
-    gametestMods 'org.bitwisemadness.tensuracapitalinsect:tensura_capital_insect:1.0.0-alpha.1'
-    gametestMods 'org.bitwisemadness.tensuracapitalmonsters:tensura_capital_monsters:1.0.0-alpha.1'
+    gametestMods 'org.bitwisemadness.tensuracapitalbeastfolk:tensura_capital_beastfolk:1.0.0-alpha.03'
+    gametestMods 'org.bitwisemadness.tensuracapitalinsect:tensura_capital_insect:1.0.0-alpha.03'
+    gametestMods 'org.bitwisemadness.tensuracapitalmonsters:tensura_capital_monsters:1.0.0-alpha.03'
     // The race integration joins the gametest runtime so the boundary test
     // proves the cross-jar registration (both sides of capital-api present).
     gametestMods 'org.bitwisemadness.capitaltensurareincarnated:capital_tensura_reincarnated:1.0.0-alpha.2'

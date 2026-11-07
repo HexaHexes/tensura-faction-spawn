@@ -119,8 +119,11 @@ public final class FactionSpawnGameTests {
     /**
      * The bundled interim capitals (Tensura's own villages) are wired to real,
      * registered structures. Vanilla silently drops unresolvable tag values, so
-     * the resolved set is pinned to the exact bundled wiring - a typo'd value or
-     * a packaging miss fails here instead of disappearing at runtime.
+     * every bundled wiring is asserted present. The real-capital jars merge
+     * their structures into these same tags (the relocation rules point at
+     * them), so the resolved set is bundled + jar contributions - the size is
+     * pinned from below, and the contains-assertions still catch a typo'd
+     * value or a packaging miss.
      */
     @GameTest(template = "empty")
     public static void bundled_capital_tags_resolve_to_registered_structures(GameTestHelper helper) {
@@ -150,8 +153,8 @@ public final class FactionSpawnGameTests {
                 .map(h -> h.unwrapKey().map(k -> k.location().toString()).orElse("<direct>"))
                 .sorted()
                 .toList();
-        helper.assertTrue(resolved.size() == expectedSize,
-                faction + " tag should resolve to " + expectedSize + " structure(s); got "
+        helper.assertTrue(resolved.size() >= expectedSize,
+                faction + " tag should resolve to at least " + expectedSize + " structure(s); got "
                         + resolved.size() + ": " + resolved);
         for (String id : expectedIds) {
             helper.assertTrue(resolved.contains(id), faction + " tag is missing bundled structure " + id);
