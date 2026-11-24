@@ -6,8 +6,8 @@ and pulled in verbatim — **never hand-edit it.** Everything in this file is th
 repo's own and is edited freely; keep it aligned with the org rules rather than
 restating them.
 
-**Repo:** `HexaHexes/tensura-faction-spawn` · **Mod ID:** `tensura_faction_spawn` · **Branch:** `main`
-**Platform:** Minecraft 1.21.1 / NeoForge 21.1.259 / JDK 21 · **Jar:** `build/libs/tensura_faction_spawn-<version>.jar`
+**Repo:** `HexaHexes/tensura-faction-spawn` · **Mod ID:** `tensura_faction_spawn` · **Branch:** `neoforge-1.21.1` (the loader line; this is the default branch - no `main`)
+**Platform:** Minecraft 1.21.1 / NeoForge 21.1.259 / JDK 21 · **Jar:** `build/libs/tensura_faction_spawn-neoforge-1.21.1-<version>.jar`
 
 Places a player at their faction's capital when they first pick a race or
 reincarnate. Datapack-driven: race-group tags match the player's race, spawn
